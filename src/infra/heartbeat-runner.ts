@@ -582,7 +582,7 @@ function resolveHeartbeatRunPrompt(params: {
   const prompt = hasExecCompletion
     ? buildExecEventPrompt({ deliverToUser: params.canRelayToUser })
     : hasCronEvents
-      ? buildCronEventPrompt(cronEvents, { deliverToUser: params.canRelayToUser })
+      ? buildCronEventPrompt(cronEvents, { deliverToUser: false })
       : resolveHeartbeatPrompt(params.cfg, params.heartbeat);
 
   return { prompt, hasExecCompletion, hasCronEvents };
@@ -651,7 +651,7 @@ export async function runHeartbeatOnce(opts: {
       channel: delivery.channel,
     });
   }
-  const visibility =
+  let visibility =
     delivery.channel !== "none"
       ? resolveHeartbeatVisibility({
           cfg,
@@ -674,6 +674,13 @@ export async function runHeartbeatOnce(opts: {
     preflight,
     canRelayToUser,
   });
+  if (hasCronEvents) {
+    visibility = {
+      ...visibility,
+      showOk: false,
+      showAlerts: false,
+    };
+  }
   const ctx = {
     Body: appendCronStyleCurrentTimeLine(prompt, cfg, startedAt),
     From: sender,

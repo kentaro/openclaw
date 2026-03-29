@@ -72,6 +72,8 @@ describe("Ghost reminder bug (issue #13317)", () => {
     expect(calledCtx?.Provider).toBe("cron-event");
     expect(calledCtx?.Body).toContain("scheduled reminder has been triggered");
     expect(calledCtx?.Body).toContain(reminderText);
+    expect(calledCtx?.Body).toContain("Handle this reminder internally");
+    expect(calledCtx?.Body).not.toContain("Please relay this reminder to the user");
     expect(calledCtx?.Body).not.toContain("HEARTBEAT_OK");
     expect(calledCtx?.Body).not.toContain("heartbeat poll");
   };
@@ -162,7 +164,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
     );
     expect(result.status).toBe("ran");
     expectCronEventPrompt(calledCtx, "Reminder: Check Base Scout results");
-    expect(sendTelegram).toHaveBeenCalled();
+    expect(sendTelegram).not.toHaveBeenCalled();
   });
 
   it("uses CRON_EVENT_PROMPT when cron events are mixed with heartbeat noise", async () => {
@@ -175,7 +177,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
     );
     expect(result.status).toBe("ran");
     expectCronEventPrompt(calledCtx, "Reminder: Check Base Scout results");
-    expect(sendTelegram).toHaveBeenCalled();
+    expect(sendTelegram).not.toHaveBeenCalled();
   });
 
   it("uses CRON_EVENT_PROMPT for tagged cron events on interval wake", async () => {
@@ -195,8 +197,9 @@ describe("Ghost reminder bug (issue #13317)", () => {
     expect(calledCtx?.Provider).toBe("cron-event");
     expect(calledCtx?.Body).toContain("scheduled reminder has been triggered");
     expect(calledCtx?.Body).toContain("Cron: QMD maintenance completed");
+    expect(calledCtx?.Body).toContain("Handle this reminder internally");
     expect(calledCtx?.Body).not.toContain("Read HEARTBEAT.md");
-    expect(sendTelegram).toHaveBeenCalled();
+    expect(sendTelegram).not.toHaveBeenCalled();
   });
 
   it("uses an internal-only cron prompt when delivery target is none", async () => {

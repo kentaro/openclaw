@@ -6,7 +6,7 @@ user-invocable: false
 
 # ACP Harness Router
 
-When user intent is "run this in Pi/Claude Code/Codex/OpenCode/Gemini (ACP harness)", do not use subagent runtime or PTY scraping. Route through ACP-aware flows.
+When user intent is "run this in Pi/Claude Code/Codex/OpenCode/Gemini/Kimi (ACP harness)", do not use subagent runtime or PTY scraping. Route through ACP-aware flows.
 
 ## Intent detection
 
@@ -39,7 +39,7 @@ Do not use:
 
 - `subagents` runtime for harness control
 - `/acp` command delegation as a requirement for the user
-- PTY scraping of pi/claude/codex/opencode/gemini CLIs when `acpx` is available
+- PTY scraping of pi/claude/codex/opencode/gemini/kimi CLIs when `acpx` is available
 
 ## AgentId mapping
 
@@ -50,6 +50,7 @@ Use these defaults when user names a harness directly:
 - "codex" -> `agentId: "codex"`
 - "opencode" -> `agentId: "opencode"`
 - "gemini" or "gemini cli" -> `agentId: "gemini"`
+- "kimi" or "kimi cli" -> `agentId: "kimi"`
 
 These defaults match current acpx built-in aliases.
 
@@ -87,7 +88,7 @@ Call:
 
 ## Thread spawn recovery policy
 
-When the user asks to start a coding harness in a thread (for example "start a codex/claude/pi thread"), treat that as an ACP runtime request and try to satisfy it end-to-end.
+When the user asks to start a coding harness in a thread (for example "start a codex/claude/pi/kimi thread"), treat that as an ACP runtime request and try to satisfy it end-to-end.
 
 Required behavior when ACP backend is unavailable:
 
@@ -108,7 +109,7 @@ Do not default to subagent runtime for these requests.
 
 ## ACPX install and version policy (direct acpx path)
 
-For this repo, direct `acpx` calls must follow the same pinned policy as the `@openclaw/acpx` extension.
+For this repo, direct `acpx` calls must follow the same pinned policy as the `@openclaw/acpx` extension package.
 
 1. Prefer plugin-local binary, not global PATH:
    - `./extensions/acpx/node_modules/.bin/acpx`
@@ -183,6 +184,7 @@ ${ACPX_CMD} codex sessions close oc-codex-<conversationId>
 - `codex`
 - `opencode`
 - `gemini`
+- `kimi`
 
 ### Built-in adapter commands in acpx
 
@@ -193,6 +195,7 @@ Defaults are:
 - `codex -> npx @zed-industries/codex-acp`
 - `opencode -> npx -y opencode-ai acp`
 - `gemini -> gemini`
+- `kimi -> kimi acp`
 
 If `~/.acpx/config.json` overrides `agents`, those overrides replace defaults.
 
